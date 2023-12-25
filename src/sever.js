@@ -1,5 +1,5 @@
 import express from "express";
-import { configViewEngine } from "./configs/vieengine";
+import { configViewEngine } from "./config/vieengine";
 const bodyParser = require("body-parser");
 import initWebroutes from "./routes/web";
 
