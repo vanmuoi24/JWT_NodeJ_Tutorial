@@ -1,10 +1,14 @@
 import express from "express";
-import { configviewsEngine } from "./configs/vieengine";
+import { configViewEngine } from "./configs/vieengine";
+const bodyParser = require("body-parser");
 import initWebroutes from "./routes/web";
+
 require("dotenv").config();
 const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 // config view engine
-configviewsEngine(app);
+configViewEngine(app);
 initWebroutes(app);
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
