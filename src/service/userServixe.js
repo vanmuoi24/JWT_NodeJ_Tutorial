@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import conect from "../config/database";
 const salt = bcrypt.genSaltSync(10);
-
+import db from "../models/index";
 const hashpassord = (userPasword) => {
   let hashpassword = bcrypt.hashSync(userPasword, salt);
   return hashpassword;
@@ -9,24 +9,30 @@ const hashpassord = (userPasword) => {
 
 const createNewuser = async (email, password, username) => {
   let hashpass = hashpassord(password);
-  const [results, fields] = await conect.connection.query(
-    `INSERT INTO users (username, email, password) VALUES (?, ?, ?)`,
-    [username, email, hashpass]
-  );
+  try {
+    await db.User.create({
+      username: username,
+      email: email,
+      password,
+      hashpass,
+    });
+  } catch (error) {
+    console.error("Error creating user:", error);
+  }
 };
 const getuserList = async () => {
-  let [result, fields] = await conect.connection.query("select * from users");
+  let [result, fields] = await conect.connection.query("select * from user");
   return result;
 };
 const deleteUser = async (id) => {
   let [result, fields] = await conect.connection.query(
-    `delete from users where id = ? `,
+    `delete from user where id = ? `,
     [id]
   );
 };
 const getUserById = async (id) => {
   let [result, fields] = await conect.connection.query(
-    "select * from users where id = ?",
+    "select * from user where id = ?",
     [id]
   );
   return result;
@@ -34,7 +40,7 @@ const getUserById = async (id) => {
 
 const updateuser = async (username, email, id) => {
   try {
-    const query = "UPDATE users SET username = ?, email = ? WHERE id = ?";
+    const query = "UPDATE user SET username = ?, email = ? WHERE id = ?";
     const [results, fields] = await conect.connection.query(query, [
       username,
       email,

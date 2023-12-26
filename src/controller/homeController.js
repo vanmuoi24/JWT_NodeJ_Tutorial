@@ -1,4 +1,5 @@
 import usercreate from "../service/userServixe";
+
 const handhelloword = (req, res) => {
   const name = "muoi";
   return res.render("home.ejs", { name });
