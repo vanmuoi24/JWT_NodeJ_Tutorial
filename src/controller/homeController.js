@@ -26,11 +26,12 @@ const handlepostUpdateUser = async (req, res) => {
   console.log(id);
   let userlist = await usercreate.getUserById(id);
   let userdata = {};
-  if (userlist && userlist.length > 0) {
-    userlist = userlist[0];
-  } else {
-    userlist = userdata;
-  }
+  userdata = userlist;
+  // if (userlist && userlist.length > 0) {
+  //   userlist = userlist[0];
+  // } else {
+  //   userlist = userdata;
+  // }
   return res.render("user-update.ejs", { userlist });
 };
 

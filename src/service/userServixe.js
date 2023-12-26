@@ -21,37 +21,35 @@ const createNewuser = async (email, password, username) => {
   }
 };
 const getuserList = async () => {
-  let [result, fields] = await conect.connection.query("select * from user");
-  return result;
+  let users = [];
+  users = await db.User.findAll();
+  return users;
 };
-const deleteUser = async (id) => {
-  let [result, fields] = await conect.connection.query(
-    `delete from user where id = ? `,
-    [id]
-  );
+const deleteUser = async (userId) => {
+  await db.User.destroy({
+    where: { id: userId },
+  });
 };
 const getUserById = async (id) => {
-  let [result, fields] = await conect.connection.query(
-    "select * from user where id = ?",
-    [id]
-  );
-  return result;
+  let user = {};
+  user = await db.User.findOne({
+    where: { id: id },
+  });
+  return user.get({ plain: true });
 };
-
 const updateuser = async (username, email, id) => {
-  try {
-    const query = "UPDATE user SET username = ?, email = ? WHERE id = ?";
-    const [results, fields] = await conect.connection.query(query, [
-      username,
-      email,
-      id,
-    ]);
-    console.log("Số dòng đã cập nhật:", results.affectedRows);
-  } catch (error) {
-    console.error("Lỗi khi cập nhật người dùng:", error);
-  }
+  await db.User.update(
+    {
+      username: username,
+      email: email,
+    },
+    {
+      where: {
+        id: id,
+      },
+    }
+  );
 };
-
 module.exports = {
   createNewuser,
   getuserList,
