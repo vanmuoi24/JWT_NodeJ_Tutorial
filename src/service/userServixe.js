@@ -13,14 +13,25 @@ const createNewuser = async (email, password, username) => {
     await db.User.create({
       username: username,
       email: email,
-      password,
-      hashpass,
+
+      password: hashpass,
     });
   } catch (error) {
     console.error("Error creating user:", error);
   }
 };
 const getuserList = async () => {
+  // test relationships
+  let newUser = await db.User.findOne({
+    where: { id: 1 },
+    include: { model: db.Group, attributes: ["id", "name", "description"] },
+    raw: true,
+    attributes: ["id", "username", "email"],
+    nest: true,
+  });
+
+  console.log("User data with group:", newUser);
+
   let users = [];
   users = await db.User.findAll();
   return users;

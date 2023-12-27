@@ -1,5 +1,6 @@
 import express from "express";
 import homeControler from "../controller/homeController";
+
 const router = express.Router();
 
 const initWebroutes = (app) => {
@@ -9,6 +10,9 @@ const initWebroutes = (app) => {
   router.post("/delete-user/:id", homeControler.handlepostDeleteUser);
   router.post("/users-update/:id", homeControler.handlepostUpdateUser);
   router.post("/update-user", homeControler.handlepostedit);
+
+  // rest api
+  // GET, POST , PUT , DELETE => MÔ HÌNH DỮ LIỆU CRUD
   return app.use("/", router);
 };
 
