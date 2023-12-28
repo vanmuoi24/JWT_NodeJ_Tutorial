@@ -6,7 +6,7 @@ const testapi = (req, res) => {
     data: "test api",
   });
 };
-const handleRegister = (req, res) => {
+const handleRegister = async (req, res) => {
   console.log(">>cal me", req.body);
 
   try {
@@ -17,10 +17,19 @@ const handleRegister = (req, res) => {
         DT: "",
       });
     }
+    if (req.body.pass && req.body.pass < 3) {
+      return res.status(200).json({
+        EM: "your password must ghave more than 3 letters",
+        EC: "1",
+        DT: "",
+      });
+    }
+
     //service user
+    let data = await loginRegister.registernewUser(req.body);
     return res.status(200).json({
-      EM: "A user succesfully",
-      EC: "0",
+      EM: data.EM,
+      EC: data.EC,
       DT: "",
     });
   } catch (error) {

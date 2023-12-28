@@ -1,6 +1,7 @@
-import bcrypt from "bcryptjs";
+// haspass
 import conect from "../config/database";
 const salt = bcrypt.genSaltSync(10);
+import bcrypt from "bcryptjs"; // haspass
 import db from "../models/index";
 const hashpassord = (userPasword) => {
   let hashpassword = bcrypt.hashSync(userPasword, salt);
