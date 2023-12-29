@@ -1,6 +1,7 @@
 import db from "../models/index";
 const salt = bcrypt.genSaltSync(10);
 import bcrypt from "bcryptjs";
+import { Op } from "sequelize";
 const hashpassord = (userPasword) => {
   let hashpassword = bcrypt.hashSync(userPasword, salt);
   return hashpassword;
@@ -20,7 +21,6 @@ const checkphone = async (userphone) => {
   let user = await db.User.findOne({
     where: { phone: userphone },
   });
-
   if (user) {
     return true;
   } else {
@@ -69,4 +69,36 @@ const registernewUser = async (userData) => {
   }
 };
 
-module.exports = { registernewUser };
+const checkpass = (inputpass, hassPass) => {
+  return bcrypt.compareSync(inputpass, hassPass);
+};
+
+const handleUserLogin = async (userData) => {
+  try {
+    let user = await db.User.findOne({
+      where: {
+        [Op.or]: [{ email: userData.email }, { phone: userData.email }],
+      },
+    });
+
+    console.log(user);
+    if (user) {
+      let ispass = checkpass(userData.pass, user.password);
+      if (ispass === true) {
+        return {
+          EM: "Ok",
+          EC: 0,
+          Dt: "",
+        };
+      }
+    }
+    return {
+      EM: "Phone number and email or password are incorrect",
+      EC: 1,
+      DT: "",
+    };
+  } catch (error) {
+    console.log(error);
+  }
+};
+module.exports = { registernewUser, handleUserLogin };
