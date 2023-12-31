@@ -1,13 +1,25 @@
 import userapi from "../service/user_apiService";
 
 const read = async (req, res) => {
-  let users = await userapi.getAllUser();
   try {
-    return res.status(200).json({
-      EM: users.EM,
-      EC: users.EC,
-      DT: users.DT,
-    });
+    if (req.query.page && req.query.page) {
+      let page = parseFloat(req.query.page);
+      let limit = parseFloat(req.query.limit);
+      let users = await userapi.getUserwithPagetion(page, limit);
+      return res.status(200).json({
+        EM: users.EM,
+        EC: users.EC,
+        DT: users.DT,
+      });
+    } else {
+      let users = await userapi.getAllUser();
+
+      return res.status(200).json({
+        EM: users.EM,
+        EC: users.EC,
+        DT: users.DT,
+      });
+    }
   } catch (error) {
     console.log(error);
     return res.status(500).json({

@@ -26,7 +26,6 @@ const getuserList = async () => {
   let newUser = await db.User.findOne({
     where: { id: 1 },
     include: { model: db.Group, attributes: ["id", "name", "description"] },
-
     attributes: ["id", "username", "email"],
     raw: true,
     nest: true,

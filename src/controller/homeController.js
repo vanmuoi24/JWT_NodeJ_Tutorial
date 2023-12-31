@@ -7,6 +7,7 @@ const handhelloword = (req, res) => {
 
 const handleUserpage = async (req, res) => {
   let userlist = await usercreate.getuserList();
+
   return res.render("user.ejs", { userlist });
 };
 

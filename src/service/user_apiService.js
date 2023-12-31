@@ -28,6 +28,39 @@ const getAllUser = async () => {
     };
   }
 };
+
+const getUserwithPagetion = async (page, limit) => {
+  try {
+    let offset = (page - 1) * limit;
+    let { count, rows } = await db.User.findAndCountAll({
+      offset: offset,
+      limit: limit,
+      include: { model: db.Group, attributes: ["id", "name", "description"] },
+      attributes: ["id", "username", "email", "phone", "sex"],
+    });
+    console.log(rows);
+    let totalpage = Math.ceil(count / limit);
+    let data = {
+      totalrow: count,
+      totalpage: totalpage,
+      user: rows,
+    };
+    console.log("check", data);
+
+    return {
+      EM: "",
+      EC: 0,
+      DT: data,
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      EM: "get date fail",
+      EC: 1,
+      DT: "",
+    };
+  }
+};
 const updateUser = async (data) => {
   try {
     let user = await db.User.findOne({
@@ -62,4 +95,5 @@ module.exports = {
   updateUser,
   createUser,
   delteUser,
+  getUserwithPagetion,
 };

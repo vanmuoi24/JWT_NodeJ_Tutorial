@@ -7,6 +7,7 @@ const initApiroutes = (app) => {
   router.get("/test-api", apiController.testapi);
   router.post("/register", apiController.handleRegister);
   router.post("/login", apiController.handleLogin);
+
   router.get("/user/show", useController.show);
   router.post("/user/create", useController.create);
   router.delete("/user/delete", useController.deleTe);
