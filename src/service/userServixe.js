@@ -30,9 +30,7 @@ const getuserList = async () => {
     raw: true,
     nest: true,
   });
-
   console.log("User data with group:", newUser);
-
   let users = [];
   users = await db.User.findAll();
   return users;

@@ -84,10 +84,30 @@ const createUser = async () => {
 };
 const delteUser = async (id) => {
   try {
-    await db.Uer.delete({
+    let user = await db.User.findOne({
       where: { id: id },
     });
-  } catch (e) {}
+    if (user) {
+      await user.destroy();
+      return {
+        EM: "ok",
+        EC: 0,
+        DT: [],
+      };
+    } else {
+      return {
+        EM: "not exist",
+        EC: 0,
+        DT: [],
+      };
+    }
+  } catch (e) {
+    return {
+      EM: "not fount",
+      EC: 0,
+      DT: [],
+    };
+  }
 };
 
 module.exports = {

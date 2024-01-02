@@ -1,5 +1,4 @@
 import userapi from "../service/user_apiService";
-
 const read = async (req, res) => {
   try {
     if (req.query.page && req.query.page) {
@@ -13,7 +12,6 @@ const read = async (req, res) => {
       });
     } else {
       let users = await userapi.getAllUser();
-
       return res.status(200).json({
         EM: users.EM,
         EC: users.EC,
@@ -51,8 +49,14 @@ const update = (req, res) => {
     });
   }
 };
-const deleTe = (req, res) => {
+const deleTe = async (req, res) => {
   try {
+    let data = await userapi.delteUser(req.body.id);
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
