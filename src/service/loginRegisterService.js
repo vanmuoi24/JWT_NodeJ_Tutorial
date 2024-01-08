@@ -2,6 +2,8 @@ import db from "../models/index";
 const salt = bcrypt.genSaltSync(10);
 import bcrypt from "bcryptjs";
 import { Op } from "sequelize";
+import JWT from "./JWTErvice";
+import token from "../middleware/JWTaction";
 const hashpassord = (userPasword) => {
   let hashpassword = bcrypt.hashSync(userPasword, salt);
   return hashpassword;
@@ -54,6 +56,7 @@ const registernewUser = async (userData) => {
       username: userData.username,
       password: hasspass,
       phone: userData.phone,
+      groupId: 14,
     });
 
     return {
@@ -81,14 +84,23 @@ const handleUserLogin = async (userData) => {
       },
     });
 
-    console.log(user);
     if (user) {
       let ispass = checkpass(userData.pass, user.password);
       if (ispass === true) {
+        // tạo token
+        let role = await JWT.GetGroupwithrole(user);
+        let payload = {
+          email: user.email,
+          role: role,
+        };
+        let tokened = token.createjwt(payload);
         return {
           EM: "Ok",
           EC: 0,
-          Dt: "",
+          DT: {
+            access_token: tokened,
+            data: role,
+          },
         };
       }
     }
@@ -101,4 +113,11 @@ const handleUserLogin = async (userData) => {
     console.log(error);
   }
 };
-module.exports = { registernewUser, handleUserLogin };
+module.exports = {
+  registernewUser,
+  handleUserLogin,
+  checkemail,
+  checkphone,
+  hashpassord,
+  checkpass,
+};

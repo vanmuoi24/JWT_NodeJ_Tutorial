@@ -7,8 +7,6 @@ const testapi = (req, res) => {
   });
 };
 const handleRegister = async (req, res) => {
-  console.log(">>cal me", req.body);
-
   try {
     if (!req.body.email || !req.body.phone || !req.body.pass) {
       return res.status(200).json({
@@ -27,10 +25,11 @@ const handleRegister = async (req, res) => {
 
     //service user
     let data = await loginRegister.registernewUser(req.body);
+
     return res.status(200).json({
       EM: data.EM,
       EC: data.EC,
-      DT: "",
+      DT: data.DT,
     });
   } catch (error) {
     return res.status(500).json({
@@ -44,10 +43,12 @@ const handleRegister = async (req, res) => {
 const handleLogin = async (req, res) => {
   try {
     let data = await loginRegister.handleUserLogin(req.body);
+    console.log("xhexk", data);
+    res.cookie("jwt", data.DT.access_token, { httpOnly: true });
     return res.status(200).json({
       EM: data.EM,
       EC: data.EC,
-      DT: "",
+      DT: data.DT,
     });
   } catch (error) {
     console.log(error);

@@ -1,5 +1,5 @@
 import db from "../models/index";
-
+import loginrigister from "../service/loginRegisterService";
 const getAllUser = async () => {
   try {
     let user = await db.User.findAll({
@@ -35,8 +35,12 @@ const getUserwithPagetion = async (page, limit) => {
     let { count, rows } = await db.User.findAndCountAll({
       offset: offset,
       limit: limit,
-      include: { model: db.Group, attributes: ["id", "name", "description"] },
-      attributes: ["id", "username", "email", "phone", "sex"],
+      include: {
+        model: db.Group,
+        attributes: ["id", "name", "description", "id"],
+      },
+      attributes: ["id", "username", "email", "phone", "sex", "address"],
+      order: [["id", "DESC"]],
     });
     console.log(rows);
     let totalpage = Math.ceil(count / limit);
@@ -63,21 +67,82 @@ const getUserwithPagetion = async (page, limit) => {
 };
 const updateUser = async (data) => {
   try {
+    if (!data.groupId) {
+      return {
+        EM: "Error with emty GroupId",
+        EC: 1,
+        DT: "group",
+      };
+    }
     let user = await db.User.findOne({
       where: { id: data.id },
     });
 
     if (user) {
-      user.save({});
+      await user.update({
+        username: data.username,
+        address: data.address,
+        sex: data.sex,
+        groupId: data.groupId,
+      });
+
+      return {
+        EM: "update user secces",
+        EC: 0,
+        DT: "",
+      };
     } else {
+      return {
+        EM: "user not found",
+        EC: 2,
+        DT: "",
+      };
     }
   } catch (e) {
     console.log(e);
+    return {
+      EM: "get date fail",
+      EC: 1,
+      DT: [],
+    };
   }
 };
-const createUser = async () => {
+const createUser = async (data) => {
   try {
-    await db.User.cre;
+    //check email phone
+    let ismailExitst = await loginrigister.checkemail(data.email);
+    if (ismailExitst === true) {
+      return {
+        EM: "the email is alresdy exits",
+        EC: 1,
+        DT: "email",
+      };
+    }
+    let isphoneExitst = await loginrigister.checkphone(data.phone);
+    if (isphoneExitst === true) {
+      return {
+        EM: "the phone is alresdy exits",
+        EC: 1,
+        DT: "phone",
+      };
+    }
+
+    //hash user passord
+    let hasspass = loginrigister.hashpassord(data.password);
+    await db.User.create({
+      email: data.email,
+      phone: data.phone,
+      sex: data.sex,
+      password: hasspass,
+      username: data.username,
+      address: data.address,
+      groupId: data.groupId,
+    });
+    return {
+      EM: "ok",
+      EC: 0,
+      DT: [],
+    };
   } catch (error) {
     console.log(error);
   }

@@ -38,8 +38,15 @@ const show = (req, res) => {
     });
   }
 };
-const update = (req, res) => {
+const update = async (req, res) => {
   try {
+    let data = await userapi.updateUser(req.body);
+    console.log(req.body);
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -66,7 +73,24 @@ const deleTe = async (req, res) => {
     });
   }
 };
-const create = async (req, res) => {};
+const create = async (req, res) => {
+  try {
+    let data = await userapi.createUser(req.body);
+    console.log(req.body);
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      EM: "error from server",
+      EC: "-1",
+      DT: "",
+    });
+  }
+};
 module.exports = {
   read,
   show,
