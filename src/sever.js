@@ -12,12 +12,10 @@ const app = express();
 // TẠO CHỈ THAO TÁC ĐƯỢC ĐƯỜNG LINK BÊN REACTJS
 // config cookie
 configCors(app);
+connection();
 app.use(cookiePasrser());
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// config view engine
-connection();
 initApiroutes(app);
 configViewEngine(app);
 initWebroutes(app);

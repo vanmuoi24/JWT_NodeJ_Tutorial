@@ -8,7 +8,7 @@ const handhelloword = (req, res) => {
 
 const handleUserpage = async (req, res) => {
   let userlist = await usercreate.getuserList();
-  console.log("check===cookie", req.cookies);
+
   res.cookie("test", "test cookie");
   return res.render("user.ejs", { userlist });
 };

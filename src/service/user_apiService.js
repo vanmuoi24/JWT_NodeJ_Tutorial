@@ -42,14 +42,13 @@ const getUserwithPagetion = async (page, limit) => {
       attributes: ["id", "username", "email", "phone", "sex", "address"],
       order: [["id", "DESC"]],
     });
-    console.log(rows);
+
     let totalpage = Math.ceil(count / limit);
     let data = {
       totalrow: count,
       totalpage: totalpage,
       user: rows,
     };
-    console.log("check", data);
 
     return {
       EM: "",

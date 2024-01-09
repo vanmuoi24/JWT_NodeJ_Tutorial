@@ -1,11 +1,5 @@
 import loginRegister from "../service/loginRegisterService";
 
-const testapi = (req, res) => {
-  return res.status(200).json({
-    message: "ok",
-    data: "test api",
-  });
-};
 const handleRegister = async (req, res) => {
   try {
     if (!req.body.email || !req.body.phone || !req.body.pass) {
@@ -44,7 +38,10 @@ const handleLogin = async (req, res) => {
   try {
     let data = await loginRegister.handleUserLogin(req.body);
     console.log("xhexk", data);
-    res.cookie("jwt", data.DT.access_token, { httpOnly: true });
+    res.cookie("jwt", data.DT.access_token, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 1000,
+    });
     return res.status(200).json({
       EM: data.EM,
       EC: data.EC,
@@ -60,4 +57,4 @@ const handleLogin = async (req, res) => {
   }
 };
 
-module.exports = { testapi, handleRegister, handleLogin };
+module.exports = { handleRegister, handleLogin };

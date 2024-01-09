@@ -1,7 +1,8 @@
 import userapi from "../service/user_apiService";
 const read = async (req, res) => {
+  console.log(req.user);
   try {
-    if (req.query.page && req.query.page) {
+    if (req.query.page && req.query.limit) {
       let page = parseFloat(req.query.page);
       let limit = parseFloat(req.query.limit);
       let users = await userapi.getUserwithPagetion(page, limit);
@@ -27,6 +28,7 @@ const read = async (req, res) => {
     });
   }
 };
+
 const show = (req, res) => {
   try {
   } catch (error) {
