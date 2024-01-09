@@ -100,6 +100,8 @@ const handleUserLogin = async (userData) => {
           DT: {
             access_token: tokened,
             data: role,
+            email: user.email,
+            username: user.username,
           },
         };
       }

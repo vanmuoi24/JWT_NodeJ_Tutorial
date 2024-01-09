@@ -1,5 +1,8 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+
+const nonSecureOaths = ["/", "/login", "/register"];
+
 const createjwt = (payload) => {
   let token = null;
   // viêt theo đông bộ rất nguy hiêm nếu bên sever mà cố lỗi thì dẫn tơi ứng dụng sẽ chết cả 2 bên back and fnt luôn
@@ -23,6 +26,8 @@ const veryfinetken = (token) => {
   return data;
 };
 const checkUserJwt = (req, res, next) => {
+  if (nonSecureOaths.includes(req.path)) return next();
+
   let cookies = req.cookies;
   if (cookies && cookies.jwt) {
     let token = cookies.jwt;
@@ -48,32 +53,33 @@ const checkUserJwt = (req, res, next) => {
   }
 };
 const checkUserPermission = (req, res, next) => {
+  if (nonSecureOaths.includes(req.path)) return next();
+
   if (req.user) {
     let email = req.user.email;
     let roles = req.user.role.Roles;
     let currenUrl = req.path;
-
     if (!roles || roles.length === 0) {
-      return res.status(403).jon({
+      return res.status(403).json({
         EC: -1,
         DT: "",
-        EM: "You dont permision to acces this resource",
+        EM: "You don't have permission to access this resource",
       });
     }
-    let canAcess = roles.some((item) => {
-      item.url === currenUrl;
-    });
-    if (canAcess) {
+    let canAccess = roles.some((item) => item.url === currenUrl);
+
+    if (canAccess === true) {
       next();
     } else {
-      return res.status(403).jon({
+      return res.status(403).json({
         EC: -1,
         DT: "",
-        EM: "You dont permision to acces this resource",
+        EM: "You don't have permission to access this resource",
       });
     }
   }
 };
+
 module.exports = {
   createjwt,
   veryfinetken,
