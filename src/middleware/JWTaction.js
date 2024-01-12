@@ -1,60 +1,60 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const nonSecureOaths = ["/", "/login", "/register"];
+const nonSecureOaths = ["/", "/login", "/register", "/logout"];
 
 const createjwt = (payload) => {
   let token = null;
-  // viêt theo đông bộ rất nguy hiêm nếu bên sever mà cố lỗi thì dẫn tơi ứng dụng sẽ chết cả 2 bên back and fnt luôn
+
   try {
-    token = jwt.sign(payload, process.env.JWT_SECRET);
-    console.log(token);
+    token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "1h", // Specify the token expiration time
+    });
   } catch (e) {
     console.log(e);
   }
+
   return token;
 };
 
 const veryfinetken = (token) => {
-  let data = null;
+  let decoded = null;
   try {
-    let decoded = jwt.verify(token, process.env.JWT_SECRET);
-    data = decoded;
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch (error) {
     console.log(error);
   }
-  return data;
+  return decoded;
 };
 const checkUserJwt = (req, res, next) => {
   if (nonSecureOaths.includes(req.path)) return next();
-
   let cookies = req.cookies;
   if (cookies && cookies.jwt) {
     let token = cookies.jwt;
     let decoded = veryfinetken(token);
+    console.log(decoded);
     if (decoded) {
-      let data = decoded;
       req.user = decoded;
-      console.log("data check", data);
+      req.token = token;
       next();
     } else {
-      return res.status(401).jon({
+      return res.status(401).json({
         EC: -1,
         DT: "",
-        EM: "Not authenticated the user",
+        EM: "Not authenticated",
       });
     }
   } else {
-    return res.status(401).jon({
+    return res.status(401).json({
       EC: -1,
       DT: "",
       EM: "Not authenticated the user",
     });
   }
 };
+
 const checkUserPermission = (req, res, next) => {
   if (nonSecureOaths.includes(req.path)) return next();
-
   if (req.user) {
     let email = req.user.email;
     let roles = req.user.role.Roles;
@@ -67,7 +67,6 @@ const checkUserPermission = (req, res, next) => {
       });
     }
     let canAccess = roles.some((item) => item.url === currenUrl);
-
     if (canAccess === true) {
       next();
     } else {

@@ -12,7 +12,6 @@ const checkemail = async (useremail) => {
   let user = await db.User.findOne({
     where: { email: useremail },
   });
-
   if (user) {
     return true;
   } else {
@@ -92,6 +91,7 @@ const handleUserLogin = async (userData) => {
         let payload = {
           email: user.email,
           role: role,
+          username: user.username,
         };
         let tokened = token.createjwt(payload);
         return {

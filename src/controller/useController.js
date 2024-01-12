@@ -93,10 +93,23 @@ const create = async (req, res) => {
     });
   }
 };
+const getUseracounts = async (req, res) => {
+  return res.status(200).json({
+    EM: "ok",
+    EC: 0,
+    DT: {
+      access_token: req.token,
+      data: req.user.role,
+      email: req.user.email,
+      username: req.user.username,
+    },
+  });
+};
 module.exports = {
   read,
   show,
   update,
   deleTe,
   create,
+  getUseracounts,
 };
